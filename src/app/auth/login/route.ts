@@ -6,7 +6,6 @@ import {
   applicationOrigin,
   isSameOriginPost,
   PRIVATE_CACHE_CONTROL,
-  safeAdminPath,
 } from "@/lib/auth/redirects";
 
 function loginError(origin: string, code: string) {
@@ -26,17 +25,10 @@ export async function POST(request: Request) {
     );
   }
 
-  let next = new URL(request.url).searchParams.get("next");
-  try {
-    const form = await request.formData();
-    const formNext = form.get("next");
-    if (typeof formNext === "string") next = formNext;
-  } catch {
-    // Requests without form data still use the safe default destination.
-  }
-
+  // Supabase matches the entire redirect URL, including its query string.
+  // Keep this identical to the exact callback entered in the allowlist;
+  // the callback sends authenticated users to /admin by default.
   const callback = new URL("/auth/callback", origin);
-  callback.searchParams.set("next", safeAdminPath(next));
 
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||

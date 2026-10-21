@@ -156,6 +156,8 @@ Google-account bootstrap must also complete.
 
 Configure the selected Supabase project's allowed redirect URLs for the admin
 origin's `/auth/callback`, preserving the creation app's existing configuration.
+Prism uses that exact callback without query parameters and opens `/admin` after
+sign-in, so an exact allowlist entry works without changing the original Site URL.
 Commit-specific preview origins need their matching callback allowed when used
 for Google-login testing. See `docs/database.md` for secure OAuth configuration.
 

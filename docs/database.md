@@ -1,9 +1,11 @@
 # SIDE B admin database and Google-login setup
 
-The SQL in this repository is **prepared for review and has not been applied**.
-Do not execute migrations, bootstrap privileges, or change the database without
-explicit approval. This application uses a publishable key and the signed-in
-user's session; it does not require a Supabase service-role key.
+The user approved the additive migration and first-account bootstrap. After
+manual SQL setup, the live API recognizes `admin_current_profile` and correctly
+denies anonymous execution. Do not reapply the migration without checking the
+existing installation. Google sign-in, first-account bootstrap, and authenticated
+CRUD still require verification. This application uses a publishable key and
+the signed-in user's session; it does not require a Supabase service-role key.
 
 For automated one-time setup after approval, a Supabase account access token can
 be supplied through the saved `SUPABASE_ACCESS_TOKEN` **network secret** in cloud
@@ -130,6 +132,10 @@ owner needs to review or recreate the provider setup, the relevant steps are:
    `127.0.0.1` is a different origin and needs its own exact callback. Approved
    commit-specific Vercel preview origins also need allowed callback URLs when
    used to test Google login. Avoid a broad allowlist for every Vercel app.
+   Prism sends the exact callback URL without query parameters and opens
+   `/admin` after sign-in. Supabase matches query strings as part of the redirect
+   allowlist; adding a query to an exact callback can fall back to the original
+   app's Site URL. Preserve that Site URL and use the exact admin callback.
 5. Configure the selected project's matching `NEXT_PUBLIC_SUPABASE_URL` and
    `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in both the cloud runtime and Vercel.
    These public values are separate from Google's private OAuth secret.
@@ -188,6 +194,7 @@ policy before changing that behavior.
   and immutable ballot rules remain in place for the original application.
   Admin creation is an explicitly privileged operation; it does not invoke the
   original AI-generation endpoint or pretend to be an ordinary quota request.
-- No migration, role promotion, data mutation, or policy change from these files
-  has been executed. SQL and live authenticated CRUD/RLS behavior still require
-  validation after database selection, approval, Google setup, and bootstrap.
+- The reviewed migration passed 28 checks in an isolated PostgreSQL 17 fixture.
+  After manual live SQL setup, the own-role RPC exists and rejects anonymous
+  execution. This does not verify a real Google-superadmin session or live
+  authenticated CRUD/RLS behavior; those remain release checks.

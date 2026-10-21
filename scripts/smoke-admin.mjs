@@ -52,7 +52,8 @@ if (oauthLocation.origin === base.origin) {
   assert.equal(oauthLocation.searchParams.get("provider"), "google");
   const returnTo = new URL(oauthLocation.searchParams.get("redirect_to"));
   assert.equal(returnTo.origin, base.origin); assert.equal(returnTo.pathname, "/auth/callback");
-  assert.equal(returnTo.searchParams.get("next"), "/admin");
+  assert.equal(returnTo.search, "", "OAuth callback must match the exact Supabase allowlist URL without a query string");
+  assert.equal(returnTo.hash, "");
   pass("OAuth starts with Google and a safe application callback; browser sign-in remains unverified");
 }
 
