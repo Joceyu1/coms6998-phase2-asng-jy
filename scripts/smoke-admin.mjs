@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { parseEnv } from "node:util";
+import { resourceKeys } from "../src/lib/admin/resource-registry.ts";
 
 const base = new URL(process.env.SMOKE_BASE_URL || "http://127.0.0.1:3000");
 const localConfig = existsSync(".env.local") ? parseEnv(readFileSync(".env.local", "utf8")) : {};
@@ -16,7 +17,9 @@ const html = await login.text();
 assert.ok(html.includes("Continue with Google") && html.includes("Welcome to Prism"));
 pass("public login renders Google sign-in");
 
-for (const path of ["/admin", "/admin/profiles", "/admin/ratings", "/admin/media", "/admin/media/new", "/admin/media/22d08406-af74-4e95-8bd8-0fa24ffde26a", "/admin/media/22d08406-af74-4e95-8bd8-0fa24ffde26a/edit", "/admin/private.svg"]) {
+const testId = "22d08406-af74-4e95-8bd8-0fa24ffde26a";
+const protectedPaths = ["/admin", "/admin/profiles", "/admin/ratings", "/admin/media", "/admin/media/new", `/admin/media/${testId}`, `/admin/media/${testId}/edit`, "/admin/private.svg", "/admin/prompt-chain-mix", "/admin/images", "/admin/images/new", `/admin/images/${testId}`, `/admin/images/${testId}/edit`, ...resourceKeys.flatMap((key) => [`/admin/${key}`, `/admin/${key}/new`, `/admin/${key}/${testId}`, `/admin/${key}/${testId}/edit`])];
+for (const path of protectedPaths) {
   const response = await request(path);
   assert.equal(response.status, 307, path);
   const location = new URL(response.headers.get("location"), base);

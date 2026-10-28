@@ -10,6 +10,8 @@
   "packageManager": "npm@11.9.0",
   "scripts": {
     "dev": "next dev",
+    "db:check": "node scripts/build-week7-sql.mjs --check",
+    "prebuild": "npm run db:check",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",

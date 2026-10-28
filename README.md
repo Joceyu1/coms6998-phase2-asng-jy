@@ -7,6 +7,27 @@ copy that application's interface, music features, or AI-generation code.
 
 ## Implemented assignment features
 
+Week 7 adds the following protected administration areas. The implementation and
+local checks are complete; its new SQL still needs owner execution before the
+Week 7 application release is activated. See [Week 7 setup](docs/week7.md).
+
+| Area | Capability |
+| --- | --- |
+| Profiles and generated media | Read users and view saved AI-generated text; existing Week 6 media CRUD remains available |
+| Prompt chains and steps | Read registered chains, templates, ordering, and model references |
+| Prompt chain mix | Read/update relative weights and activation in one atomic save |
+| Terms and generation examples | Create/read/update/delete |
+| LLM models and providers | Create/read/update/delete metadata, with foreign-key validation |
+| Generation requests and LLM responses | Read newly observed creation-service reservations and saved parsed completions |
+| Signup domains and whitelisted emails | Create/read/update/delete catalog records; no role promotion or automatic change to the original app's Columbia policy |
+| Images | Private avatar/image viewing, upload, metadata editing, replacement, and confirmed deletion |
+
+The dashboard also shows observed request outcomes, recent requests, active
+model/provider records, and registered-chain counts. No historical provider
+requests, raw responses, token usage, latency, or costs are fabricated.
+
+Week 6 features remain:
+
 - Dashboard with real profile/media/vote totals, approval rate, seven days of
   voting activity, publication status distribution, unrated creations, and the
   most engaging notes. Empty states do not invent example statistics.
@@ -19,13 +40,11 @@ copy that application's interface, music features, or AI-generation code.
   checks the persisted `profiles.is_superadmin` role. Ordinary users cannot
   promote themselves through this application.
 
-**Live integration remains pending.** The user selected the original creation
-app's Supabase project, `qrgjqpdvvbwmjpthpmlo`. Its public configuration is now
-in ignored local settings and the admin Vercel project. The reviewed additive
-migration and first-admin bootstrap have not been executed. The selected
-project's health and Google-provider checks passed; complete Google login and
-authenticated CRUD still need verification. See [database setup and
-bootstrap](docs/database.md).
+The selected shared database is the original creation app's Supabase project,
+`qrgjqpdvvbwmjpthpmlo`. Week 6 was deployed, and the user confirmed Google/admin
+management checks and the original app's saved vote-change fix. The separate
+new project `zssjripfhjrptftwddla` is unused. Do not rerun the Week 6 bootstrap or
+switch projects while setting up Week 7. See [database setup](docs/database.md).
 
 ## Local development
 
@@ -68,7 +87,10 @@ npm run build
 npm start
 ```
 
-`npm start` serves the production build and requires a successful `npm run build`.
+`npm run build` first checks that the combined Week 7 SQL matches its source
+migrations; it does not execute SQL. Regenerate after an intentional migration
+edit with `node scripts/build-week7-sql.mjs`. `npm start` serves the production
+build and requires a successful `npm run build`.
 Next.js generates `next-env.d.ts` and `.next/` locally. npm's lockfile is included;
 use `npm ci` to reproduce the installed dependency versions.
 
@@ -81,9 +103,11 @@ unverified live-auth prerequisite, not a successful Google sign-in. Tests never
 create users, write database rows, or invoke media mutations.
 
 The pure security/input tests use Node's built-in runner and TypeScript stripping.
-The SQL review files were parsed offline, without executing them. Authenticated
-CRUD, role revocation, and RLS still need live verification after the approved
-database and Google configuration are available.
+The Week 7 SQL was executed against an isolated PostgreSQL 17 fixture containing
+the original application and Week 6 admin schema. Its checks cover authorization,
+CRUD, mix rollback, image permissions, and atomic setup rollback. Local browser
+fixtures exercise the real Next.js pages/actions without adding a production
+login bypass. Production Google-session checks remain separate release checks.
 
 ### Tooling limitations observed during setup
 
@@ -160,12 +184,18 @@ Prism uses that exact callback without query parameters and opens `/admin` after
 sign-in, so an exact allowlist entry works without changing the original Site URL.
 Commit-specific preview origins need their matching callback allowed when used
 for Google-login testing. See `docs/database.md` for secure OAuth configuration.
+The Week 7 setup instructions and requirement-to-route mapping are in
+[docs/week7.md](docs/week7.md). It uses the existing publishable configuration;
+no new service-role or AI provider key is required by the admin application.
 
 ## Feedback and submission
 
-Actual prior-week feedback has not been supplied; the original public README
-also records no PM feedback session. See [feedback tracking](docs/feedback.md).
-No rubric points for feedback implementation are claimed without that input.
+The supplied TA feedback deducts points because voters cannot change a vote
+after casting it. That correction belongs in the original rating application;
+this admin's ratings view remains read-only. See [feedback tracking](docs/feedback.md)
+for the released code, database activation, and acceptance checks. The vote-change
+code has been deployed, the user confirmed successful SQL execution, and a live
+screenshot confirms a successful saved vote change.
 
 The assignment requires immutable deployment URLs for both applications.
 See [submission checklist](docs/submission.md). Use the exact READY deployment

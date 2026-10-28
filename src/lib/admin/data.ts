@@ -4,7 +4,7 @@ import { requireSuperadmin } from "@/lib/auth/session";
 import type { Dashboard, Media, PageResult, Profile, Vote } from "./types";
 import { isUuid } from "./validation";
 
-async function adminRpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
+export async function adminRpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
   const { supabase } = await requireSuperadmin();
   const { data, error } = await supabase.rpc(name, args);
   if (error) {

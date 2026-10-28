@@ -2,10 +2,12 @@ import Link from "next/link";
 
 import { ActivityChart, DistributionChart, EmptyState, PageHeader, StatCard } from "@/components/admin";
 import { getDashboard } from "@/lib/admin/data";
+import { getWeek7Overview } from "@/lib/admin/resource-data";
+import { displayDate, shortId } from "@/lib/admin/format";
 import { approvalPercent } from "@/lib/admin/validation";
 
 export default async function DashboardPage() {
-  const data = await getDashboard();
+  const [data, operations] = await Promise.all([getDashboard(), getWeek7Overview()]);
   const approval = approvalPercent(data.upvotes, data.downvotes);
   const colors: Record<string, string> = { published: "#22b8a0", pending: "#8b70f2", failed: "#ed9472" };
   return (
@@ -17,6 +19,21 @@ export default async function DashboardPage() {
         <StatCard label="Votes cast" value={data.total_votes.toLocaleString()} detail={`${data.upvotes.toLocaleString()} up · ${data.downvotes.toLocaleString()} down`} tone="amber" />
         <StatCard label="Community approval" value={approval === null ? "—" : `${approval}%`} detail={approval === null ? "Waiting for the first vote" : "Upvotes as a share of all votes"} tone="rose" />
       </div>
+      <section className="panel" aria-labelledby="operations-heading">
+        <div className="panel-header"><div><p className="eyebrow">Behind each creation</p><h2 id="operations-heading">Generation activity</h2></div><Link href="/admin/generation-requests" className="text-link">Explore requests →</Link></div>
+        <div className="stats-grid">
+          <StatCard label="Observed requests" value={operations.generation_requests.toLocaleString()} detail="Since observability was enabled" tone="violet" />
+          <StatCard label="Saved completions" value={operations.llm_responses.toLocaleString()} detail="Parsed model outputs" tone="teal" />
+          <StatCard label="Active models" value={operations.active_models.toLocaleString()} detail={`${operations.active_providers.toLocaleString()} active provider records`} tone="amber" />
+          <StatCard label="Registered chains" value={operations.prompt_chains.toLocaleString()} detail={`${operations.prompt_chain_steps.toLocaleString()} ordered prompt steps`} tone="rose" />
+        </div>
+        <DistributionChart caption="Observed request outcomes" items={operations.request_statuses.map((item) => ({ ...item, color: colors[item.label] ?? "#8b70f2" }))} />
+        <p className="field-hint">New requests and saved completions are recorded by the creation service. Historical records and manually added media are kept separate.</p>
+      </section>
+      <section className="panel">
+        <div className="panel-header"><div><p className="eyebrow">A closer look</p><h2>Latest generation requests</h2></div><Link href="/admin/llm-responses" className="text-link">View completions →</Link></div>
+        {operations.latest_requests.length === 0 ? <EmptyState title="Ready for the next request" description="New creation activity will appear here once the generation service reserves a request." /> : <div className="table-wrap"><table className="data-table"><thead><tr><th scope="col">Request</th><th scope="col">Status</th><th scope="col">Model</th><th scope="col">Requested</th></tr></thead><tbody>{operations.latest_requests.map((request) => <tr key={request.id}><td><Link className="text-link" href={`/admin/generation-requests/${request.id}`}>{shortId(request.id)}</Link></td><td><span className={`badge status-${String(request.status)}`}>{String(request.status)}</span></td><td>{typeof request.model_key === "string" ? request.model_key : "Not recorded"}</td><td>{typeof request.created_at === "string" ? displayDate(request.created_at) : "Not recorded"}</td></tr>)}</tbody></table></div>}
+      </section>
       <div className="dashboard-grid">
         <section className="panel">
           <div className="panel-header"><div><p className="eyebrow">Community pulse</p><h2>Every vote tells a story</h2></div><span className="badge">Last 7 days · UTC</span></div>
