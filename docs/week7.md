@@ -52,9 +52,11 @@ application schema. Do not apply this to the unused new Supabase project.
    make a new generation. Confirm its request and saved completion appear in
    Prism; do not confuse a manually added media record with a provider request.
 
-The saved management token currently returns HTTP 403 for this project. Owner
-SQL Editor access is the available live setup path; the local fixture tests do
-not imply that this production SQL has already run.
+The saved management token returns HTTP 403 for this project, so the owner used
+SQL Editor and confirmed successful execution on October 28. The live API now
+recognizes the Week 7 list, mix, and image RPCs and rejects anonymous execution
+with SQLSTATE 42501. That confirms installation and anonymous denial; a real
+Google-superadmin CRUD session remains a separate release check.
 
 Check bundle freshness with `npm run db:check`. Regenerate intentionally with
 `node scripts/build-week7-sql.mjs` after changing either migration. Production

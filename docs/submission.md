@@ -13,15 +13,18 @@ October 28. Both projects have SSO/password/IP deployment protection disabled.
 The original app includes the previously released own-vote-change feedback fix.
 The Week 7 work does not change the original repository.
 
-**The Week 7 release is staged on a preview branch.** Production remains on the
-Week 6 build until owner SQL setup is confirmed. The older admin URL above does
-not contain the new pages; use the final READY Week 7 release URL for submission.
+**Week 7 is released from `main` after the owner's successful SQL setup.** The
+older admin URL above is a Week 6 baseline; use the newest READY Week 7 deployment
+from [the admin project](https://vercel.com/jocelyn13/coms6998-phase2-asng-jy) and
+verify its GitHub commit. Its exact immutable URL is reported in chat and the
+ignored release receipt, avoiding a self-referential deployment URL in source.
 
 Before releasing Week 7:
 
 1. Review the implementation and `supabase/week7-setup.sql`. The owner must run
    the entire approved bundle once on `qrgjqpdvvbwmjpthpmlo`. Management API access
-   is still denied; a local test result does not establish live execution.
+   is still denied. The owner confirmed successful execution on October 28;
+   do not reapply the bundle blindly.
 2. Keep the existing Google provider and superadmin account. Do not rerun Week 6
    SQL or bootstrap. Preserve the original app's Site URL and redirect entries.
 3. Finish lint, type checking, application tests, SQL fixture checks, production

@@ -8,8 +8,9 @@ copy that application's interface, music features, or AI-generation code.
 ## Implemented assignment features
 
 Week 7 adds the following protected administration areas. The implementation and
-local checks are complete; its new SQL still needs owner execution before the
-Week 7 application release is activated. See [Week 7 setup](docs/week7.md).
+local checks are complete. The owner confirmed successful SQL setup on October
+28, and the live API recognizes the new RPCs while denying anonymous execution.
+See [Week 7 setup](docs/week7.md) for new-environment installation and live checks.
 
 | Area | Capability |
 | --- | --- |
