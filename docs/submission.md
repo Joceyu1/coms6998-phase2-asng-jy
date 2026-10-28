@@ -13,9 +13,9 @@ October 28. Both projects have SSO/password/IP deployment protection disabled.
 The original app includes the previously released own-vote-change feedback fix.
 The Week 7 work does not change the original repository.
 
-**The Week 7 admin build has not been deployed yet.** The older admin URL above
-does not contain the new Week 7 pages. Use the next approved READY admin release
-and its actual commit-specific URL for this submission.
+**The Week 7 release is staged on a preview branch.** Production remains on the
+Week 6 build until owner SQL setup is confirmed. The older admin URL above does
+not contain the new pages; use the final READY Week 7 release URL for submission.
 
 Before releasing Week 7:
 
@@ -26,8 +26,9 @@ Before releasing Week 7:
    SQL or bootstrap. Preserve the original app's Site URL and redirect entries.
 3. Finish lint, type checking, application tests, SQL fixture checks, production
    build, anonymous HTTP checks, and local browser workflow checks.
-4. Obtain release approval under the user's original push/deploy restriction.
-   Pushing `main` triggers Vercel automatically, so it also publishes the change.
+4. The user's earlier GitHub/Vercel approval covers this continued admin update.
+   Publish the review branch first. Keep production unchanged until the owner
+   confirms the SQL succeeds; pushing `main` triggers a production deployment.
 5. Verify the resulting deployment is READY and matches the pushed commit. Add
    its exact `/auth/callback` to the shared project's redirect allowlist.
 6. Open that exact URL in Incognito. Confirm Google sign-in, denial for a
